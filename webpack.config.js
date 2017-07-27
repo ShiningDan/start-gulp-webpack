@@ -63,7 +63,7 @@ const config = {
 const getDevEntry = (cwd) => {
   const entry = {};
   // node的glob模块允许你使用 *等符号, 来写一个glob规则,像在shell里一样,获取匹配对应规则的文件.
-  glob.sync('*.jsx', { cwd} ).forEach((item) => {
+  glob.sync('*.jsx', { cwd } ).forEach((item) => {
     const file = item.replace('.jsx', '');
     // entry[file] = `./${item}`;
     entry[file] = [

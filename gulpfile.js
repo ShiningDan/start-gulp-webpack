@@ -48,6 +48,14 @@ gulp.task('start', (cb) => {
       throw new gutil.PluginError('webpack-dev-server', err);
     }
   })
+
+  // compiler.run((err, stats) => {
+  //   if(err) throw new gutil.PluginError("webpack:build-dev", err);
+	// 	gutil.log("[webpack:build-dev]", stats.toString({
+	// 		colors: true
+	// 	}));
+	// 	cb();
+  // })
 })
 
 gulp.task('clean', (cb) => {
@@ -82,7 +90,9 @@ gulp.task('build:lib', ['clean'], () => {
     .pipe(gulp.dest('lib'));
   
   return gulp.src('src/**/*.js?(x)')
-    .pipe(babel())
+    .pipe(babel({
+      presets: ['es2015','react', 'stage-3']
+    }))
     .pipe(gulp.dest('lib'));
 })
 

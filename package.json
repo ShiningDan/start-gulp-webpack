@@ -1,12 +1,12 @@
 {
-  "name": "ais-netmonitor",
+  "name": "start-gulp-webpack",
   "version": "0.0.1",
-  "description": "AIS World Wide Net Monitor Project",
+  "description": "A Structure with webpack and gulp to start a project",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "ShiningDan",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.25.0",

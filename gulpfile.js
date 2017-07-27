@@ -6,7 +6,11 @@ const gutil = require('gulp-util');
 const open = require('open');
 const webpackDevServer = require('webpack-dev-server');
 const path = require('path');
+const del = require('del');
+const babel = require('gulp-babel');
 const config = require('./webpack.config');
+
+const port = 3000;
 
 gulp.task('start', (cb) => {
   let buildFirstTime = true;
@@ -22,9 +26,9 @@ gulp.task('start', (cb) => {
       buildFirstTime = false;
       cb & cb();
       //gutil.log() 的结果会自动带上时间前缀。另外，它还支持颜色
-      gutil.log('[webpack-dev-server]', gutil.colors.magenta('http://localhost:3000')),
+      gutil.log('[webpack-dev-server]', gutil.colors.magenta(`http://localhost:${port}`)),
       gutil.log('[webpack-dev-server]', 'to stop service, press [Ctrl + C] ...');
-      open('http://localhost:3000/demo/index.html');
+      open(`http://localhost:${port}/demo/index.html`);
     }
   })
 
@@ -39,12 +43,70 @@ gulp.task('start', (cb) => {
     // 允许跨域
     headers: {'Access-Control-Allow-Origin': '*'},
     contentBase: path.resolve(__dirname, './'),
-  }).listen(3000, '127.0.0.1', (err) => {
+  }).listen(port, '127.0.0.1', (err) => {
     if (err) {
       throw new gutil.PluginError('webpack-dev-server', err);
     }
   })
+})
+
+gulp.task('clean', (cb) => {
+  // 删除 build 和 lib 文件夹中的内容
+  del(['build', 'lib']).then(() => {
+    cb();
+  })
+})
+
+gulp.task('build:dist', ['clean'], (cb) => {
+  const webpackConfig = config.prod();
+  const compiler = webpack(webpackConfig, (err, stats) => {
+    if (err) {
+      gutil.log(err);
+    }
+
+    gutil.log(stats.toString({
+      color: true,
+      chunks: false,
+    }))
+  })
+  compiler.plugin('done', (stats) => {
+    if (stats.hasErrors()) {
+      console.log(stats.toString({ color: true}));
+    }
+    cb & cb();
+  })
+})
+
+gulp.task('build:lib', ['clean'], () => {
+  gulp.src(['src/**/*.less', 'src/**/*.scss'], ['src/**/*.scssm'], ['src/**/*.lessm'], ['src/**/*.cssm'])
+    .pipe(gulp.dest('lib'));
   
+  return gulp.src('src/**/*.js?(x)')
+    .pipe(babel())
+    .pipe(gulp.dest('lib'));
+})
+
+gulp.task('build:demo', ['clean'], (cb) => {
+  const webpackConfig = config.demo();
+
+  const compiler = webpack(webpackConfig, (err, stats) => {
+    if (err) {
+      gutil.log(err);
+    }
+
+    gutil.log(stats.toString({
+      color: true,
+      chunks: false,
+    }))
+  })
+
+  compiler.plugin('done', (stats) => {
+    if (stats.hasErrors()) {
+      console.log(stats.toString({ color: true}));
+    }
+    cb & cb();
+  })
 })
 
 gulp.task('default', ['start']);
+gulp.task('build', ['build:dist', 'build:lib', 'build:demo'])

@@ -32,9 +32,6 @@ const config = {
       test: /\.jsx?$/,
       exclude: /node_modules/,
       loader: 'babel-loader',
-      query: {
-        presets: ['es2015','react', 'stage-3']
-      }
     }, {
       test: /\.css$/,
 			loader: "style-loader!css-loader"

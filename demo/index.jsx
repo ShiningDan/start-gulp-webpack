@@ -1,17 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { h, render, Component } from 'preact';
 
-import Map from '../src/components/map/map.jsx';
+import App from '../src/components/app/app.jsx';
 
-class Index extends React.Component {
+class Index extends Component {
 
   render() {
     return (
       <div>
-      <Map />
+      <App />
       </div>
     );
   }
 }
 
-ReactDOM.render(<Index />, document.getElementById('container'))
+render(<Index />, document.getElementById('container'))

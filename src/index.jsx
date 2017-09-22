@@ -1,2 +1,2 @@
-import Map from './components/map/map.jsx'
-export default Map
+import App from './components/app/app.jsx'
+export default App
